@@ -4,6 +4,10 @@ Open video clips in Obsidian. It works for both edit mode and preview mode
 
 ## Demo
 
+
+https://github.com/user-attachments/assets/4e23a027-176b-46f2-8379-dd65f17b76a5
+
+
 ## TODO
 
 - [ ] Online video timepstamp

@@ -1,7 +1,7 @@
 {
-  "id": "obsidian-mpv",
-  "name": "mpv",
-  "version": "1.0.0",
+  "id": "open-in-mpv",
+  "name": "Open in mpv",
+  "version": "1.1.0",
   "minAppVersion": "1.6.7",
   "description": "Open video in mpv",
   "author": "bennyyyip",

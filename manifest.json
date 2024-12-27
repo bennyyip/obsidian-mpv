@@ -1,10 +1,10 @@
 {
-  "id": "open-in-mpv",
-  "name": "Open in mpv",
-  "version": "1.1.0",
-  "minAppVersion": "1.6.7",
-  "description": "Open video in mpv",
-  "author": "bennyyyip",
-  "authorUrl": "https://github.com/bennyyip",
-  "isDesktopOnly": true
+	"id": "open-in-mpv",
+	"name": "Open in mpv",
+	"version": "1.1.1",
+	"minAppVersion": "1.6.7",
+	"description": "Open video in mpv",
+	"author": "bennyyyip",
+	"authorUrl": "https://github.com/bennyyip",
+	"isDesktopOnly": true
 }

@@ -1,12 +1,20 @@
-import type { App, MarkdownView, Plugin, View, Workspace } from 'obsidian'
+import type { App, MarkdownView, Plugin, Workspace } from 'obsidian'
+import { FileSystemAdapter } from 'obsidian'
 import { spawn } from 'child_process'
 import * as net from 'net'
-import { WorkspaceLeaf } from 'obsidian'
 
-function sleep(ms) {
+function sleep(ms: number) {
   return new Promise((resolve) => {
     setTimeout(resolve, ms)
   })
+}
+
+export function getBasePath(app: App): string | null {
+  const adapter = app.vault.adapter
+  if (adapter instanceof FileSystemAdapter) {
+    return adapter.getBasePath()
+  }
+  return null
 }
 
 export async function openInMpv(link: string, timestamp: string | null = null) {
@@ -46,10 +54,10 @@ export async function openInMpv(link: string, timestamp: string | null = null) {
   // subprocess.stdout?.on('data', (data) => console.error('open in mpv stdout:', data.toString()))
 }
 
-function PipeExists(pipePath): Promise<boolean> {
-  return new Promise<boolean>((resolve, reject) => {
+function PipeExists(pipePath: string): Promise<boolean> {
+  return new Promise<boolean>((resolve, _) => {
     const socket = net.connect(pipePath)
-    socket.on('error', (err) => {
+    socket.on('error', () => {
       resolve(false)
     })
     socket.on('connect', () => {
@@ -59,7 +67,7 @@ function PipeExists(pipePath): Promise<boolean> {
   })
 }
 
-function mpvSeek(pipePath, timestamp) {
+function mpvSeek(pipePath: string, timestamp: string) {
   const socket = net.connect(pipePath)
   socket.on('connect', () => {
     console.debug('seek!', timestamp)
@@ -107,16 +115,16 @@ export function getRunningMarkdownViewInstance(plugin: Plugin): Promise<Markdown
   })
 }
 
-export function getViewPrototype<T>(ctor: T): T {
-  return (ctor as any).prototype
+export function getViewPrototype<T extends ObjectConstructor>(ctor: T): Object {
+  return ctor.prototype
 }
 
-export function getInstanceCtor<T>(instance: T): T {
-  return (instance as any).constructor
+export function getInstanceCtor<T extends Object>(instance: T): Function {
+  return instance.constructor
 }
 
-export function getInstancePrototype<T>(instance: T): T {
-  return (instance as any).constructor.prototype
+export function getInstancePrototype<T extends Object>(instance: T): T {
+  return instance.constructor.prototype
 }
 
 declare module 'obsidian' {
@@ -172,7 +180,7 @@ export function reloadMarkdownPreview(workspace: Workspace) {
   })
 }
 
-function getPipePath(link: string) {
+function getPipePath(link: string): string {
   const b64 = Buffer.from(link).toString('base64')
   return '\\\\.\\pipe\\' + b64
 }

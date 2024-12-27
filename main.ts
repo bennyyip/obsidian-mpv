@@ -1,17 +1,13 @@
-import {
-  App,
-  Editor,
-  MarkdownView,
-  Modal,
-  Notice,
-  parseLinktext,
-  Plugin,
-  PluginSettingTab,
-  Setting,
-  Workspace,
-} from 'obsidian'
+import { parseLinktext, Plugin, Workspace } from 'obsidian'
 import type { MarkdownEditView } from 'obsidian'
-import { openInMpv, isVideoLink, isVideoExt, getInstancePrototype, getRunningMarkdownViewInstance } from './utils'
+import {
+  openInMpv,
+  isVideoLink,
+  isVideoExt,
+  getInstancePrototype,
+  getRunningMarkdownViewInstance,
+  getBasePath,
+} from './utils'
 import type { PreviewEventHanlder } from 'obsidian'
 import { MarkdownPreviewRenderer } from 'obsidian'
 import { around } from 'monkey-around'
@@ -136,9 +132,13 @@ export default class MpvPlugin extends Plugin {
     console.debug('linktext open patched')
   }
 
-  private async openInternalLink(linktext, sourcePath, fallback) {
+  private async openInternalLink(linktext: string, sourcePath: string, fallback: Function) {
     const { metadataCache } = this.app
-    const basePath = (this.app.vault.adapter as any).basePath
+    const basePath = getBasePath(this.app)
+    if (basePath === null) {
+      console.error('cannot get basePath')
+      return
+    }
     const { path: linkpath, subpath } = parseLinktext(linktext)
     const linkFile = metadataCache.getFirstLinkpathDest(linkpath, sourcePath)
     if (!linkFile || !isVideoExt(linkFile.extension)) {
